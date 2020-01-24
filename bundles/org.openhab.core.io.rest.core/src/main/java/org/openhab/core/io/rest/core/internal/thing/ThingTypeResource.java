@@ -23,12 +23,10 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.auth.Role;
 import org.openhab.core.config.core.ConfigDescription;
 import org.openhab.core.config.core.ConfigDescriptionRegistry;
@@ -78,7 +76,6 @@ import io.swagger.annotations.ApiResponses;
  * @author Yordan Zhelev - Added Swagger annotations
  * @author Miki Jankov - Introducing StrippedThingTypeDTO
  * @author Franck Dechavanne - Added DTOs to ApiResponses
- * @author Yannick Schaus - Added filter to getAll
  */
 @Path(ThingTypeResource.PATH_THINGS_TYPES)
 @Api(value = ThingTypeResource.PATH_THINGS_TYPES)
@@ -148,16 +145,10 @@ public class ThingTypeResource implements RESTResource {
     @ApiOperation(value = "Gets all available thing types without config description, channels and properties.", response = StrippedThingTypeDTO.class, responseContainer = "Set")
     @ApiResponses(value = @ApiResponse(code = 200, message = "OK", response = StrippedThingTypeDTO.class, responseContainer = "Set"))
     public Response getAll(
-            @HeaderParam(HttpHeaders.ACCEPT_LANGUAGE) @ApiParam(value = HttpHeaders.ACCEPT_LANGUAGE) String language,
-            @QueryParam("bindingId") @ApiParam(value = "filter by binding Id", required = false) @Nullable String bindingId) {
+            @HeaderParam(HttpHeaders.ACCEPT_LANGUAGE) @ApiParam(value = HttpHeaders.ACCEPT_LANGUAGE) String language) {
         Locale locale = localeService.getLocale(language);
         Stream<StrippedThingTypeDTO> typeStream = thingTypeRegistry.getThingTypes(locale).stream()
                 .map(t -> convertToStrippedThingTypeDTO(t, locale));
-
-        if (bindingId != null) {
-            typeStream = typeStream.filter(type -> type.UID.startsWith(bindingId + ':'));
-        }
-
         return Response.ok(new Stream2JSONInputStream(typeStream)).build();
     }
 

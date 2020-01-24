@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import javax.annotation.security.RolesAllowed;
@@ -26,13 +25,11 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.auth.Role;
 import org.openhab.core.config.core.ConfigDescription;
 import org.openhab.core.config.core.ConfigDescriptionRegistry;
@@ -67,7 +64,6 @@ import io.swagger.annotations.ApiResponses;
  *
  * @author Chris Jackson - Initial contribution
  * @author Franck Dechavanne - Added DTOs to ApiResponses
- * @author Yannick Schaus - Added filter to getAll
  */
 @Path(ChannelTypeResource.PATH_CHANNEL_TYPES)
 @RolesAllowed({ Role.ADMIN })
@@ -126,21 +122,11 @@ public class ChannelTypeResource implements RESTResource {
     @ApiOperation(value = "Gets all available channel types.", response = ChannelTypeDTO.class, responseContainer = "Set")
     @ApiResponses(value = @ApiResponse(code = 200, message = "OK", response = ChannelTypeDTO.class, responseContainer = "Set"))
     public Response getAll(
-            @HeaderParam(HttpHeaders.ACCEPT_LANGUAGE) @ApiParam(value = HttpHeaders.ACCEPT_LANGUAGE) String language,
-            @QueryParam("prefixes") @ApiParam(value = "filter UIDs by prefix (multiple comma-separated prefixes allowed, for example: 'system,mqtt')", required = false) @Nullable String prefixes) {
+            @HeaderParam(HttpHeaders.ACCEPT_LANGUAGE) @ApiParam(value = HttpHeaders.ACCEPT_LANGUAGE) String language) {
         Locale locale = localeService.getLocale(language);
 
         Stream<ChannelTypeDTO> channelStream = channelTypeRegistry.getChannelTypes(locale).stream()
                 .map(c -> convertToChannelTypeDTO(c, locale));
-
-        if (prefixes != null) {
-            Predicate<ChannelTypeDTO> filter = ct -> false;
-            for (String prefix : prefixes.split(",")) {
-                filter = filter.or(ct -> ct.UID.startsWith(prefix + ":"));
-            }
-            channelStream = channelStream.filter(filter);
-        }
-
         return Response.ok(new Stream2JSONInputStream(channelStream)).build();
     }
 
