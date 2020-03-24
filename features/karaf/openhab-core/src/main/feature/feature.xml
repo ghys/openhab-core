@@ -40,6 +40,7 @@
 		<bundle start-level="75">mvn:org.openhab.core.bundles/org.openhab.core.config.xml/${project.version}</bundle>
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core/${project.version}</bundle>
 		<feature dependency="true">openhab-core-storage-mapdb</feature>
+		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.auth.jaas/${project.version}</bundle>
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.binding.xml/${project.version}</bundle>
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.id/${project.version}</bundle>
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.persistence/${project.version}</bundle>
@@ -55,7 +56,9 @@
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.io.net/${project.version}</bundle>
 		<feature dependency="true">pax-http-whiteboard</feature>
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.io.http/${project.version}</bundle>
+		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.io.http.auth/${project.version}</bundle>
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.io.rest/${project.version}</bundle>
+		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.io.rest.auth/${project.version}</bundle>
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.io.rest.optimize/${project.version}</bundle>
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.io.rest.core/${project.version}</bundle>
 		<bundle>mvn:org.openhab.core.bundles/org.openhab.core.io.rest.sse/${project.version}</bundle>
